@@ -27,7 +27,7 @@ if the directories are on separate systems, follow this three step process:\n\
         this creates a list of files and their hashes and saves it as 'scan.json'\n\
         send this file to the person performing step 2\n\
     2. preparing the patch data\n\
-        python3 gapsync *source_dir* scan.json -d *data_dir*\n\
+        python3 gapsync *source_dir* target.json -d *data_dir*\n\
         this compares the source data to the scan of the target data\n\
         then it collects all necessary data in *data_dir*\n\
         send that directory to the person performing the next step\n\
