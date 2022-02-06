@@ -1,5 +1,4 @@
 import os, shutil
-import subprocess
 import unittest
 import filecmp
 
@@ -36,7 +35,7 @@ class TestIntegration(unittest.TestCase):
         
         self.assertEqual(cm.exception.code, 2)
 
-    def test_scan_output(self):
+    def test_sync_airgap(self):
         prepare_test()
         path_out = os.path.join(tmp_dir, "target.json")
         path_data = os.path.join(tmp_dir, "data")
@@ -51,6 +50,12 @@ class TestIntegration(unittest.TestCase):
 
         # step 3
         process_args(parse_args([os.path.join(tmp_dir, "tgt"), "-d", path_data, "-p"]))
+        self.assertTrue(dirs_identical(os.path.join(tmp_dir, "src"), os.path.join(tmp_dir, "tgt")), "source and target should be identical")
+
+    def test_sync_direct(self):
+        prepare_test()
+
+        process_args(parse_args([os.path.join(tmp_dir, "src"), os.path.join(tmp_dir, "tgt"), "-p"]))
         self.assertTrue(dirs_identical(os.path.join(tmp_dir, "src"), os.path.join(tmp_dir, "tgt")), "source and target should be identical")
 
 
