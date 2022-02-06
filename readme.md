@@ -58,4 +58,4 @@ In this final step your friend will have to run the following command:
 python3 gapsync *target_dir* -d *data_dir* -p
 ```
 After some checks, the patch you calculated will be applied to the target directory.
-If your friend wants to do a dry run first, without changing any files, just omit the `-p` flag."
+If your friend wants to do a dry run first, without changing any files, just omit the `-p` flag.
