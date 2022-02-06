@@ -8,9 +8,9 @@
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
+            "program": "gapsync",
             "console": "integratedTerminal",
-            "args": ["C:/Users/qtng/Documents", "-v"] //scan target
+            "args": ["test/data", "-v"] //scan target
             //"args": ["test/target", "-o", "test/scan.json"] //scan target
             //"args": ["test/source", "test/target"] //compare directly
             //"args": ["test/source", "test/scan.json", "-d", "test/data"] //compare from scan, perpare patch 

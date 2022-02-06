@@ -3,7 +3,7 @@ import subprocess
 import unittest
 import filecmp
 
-from gapsync.cli_logic import parse_args, process_args
+from gapsync.code.cli_logic import parse_args, process_args
 
 tmp_dir = "data_tmp"
 
@@ -24,6 +24,9 @@ def prepare_test():
     set_cwd()
     reset_dir()    
 
+def dirs_identical(dir1, dir2):
+    c = filecmp.dircmp(dir1, dir2)
+    return len(c.left_only) == 0 and len(c.right_only) == 0 and len(c.diff_files) == 0
 
 
 class TestIntegration(unittest.TestCase):
@@ -36,9 +39,21 @@ class TestIntegration(unittest.TestCase):
     def test_scan_output(self):
         prepare_test()
         path_out = os.path.join(tmp_dir, "target.json")
+        path_data = os.path.join(tmp_dir, "data")
 
+        # step 1
         process_args(parse_args([os.path.join(tmp_dir, "tgt"), "-o", path_out]))
-        self.assertTrue(filecmp.cmp(path_out, os.path.join("data/output", "target.json")))
+        self.assertTrue(filecmp.cmp(path_out, os.path.join("data/output", "target.json")), "scan output should match reference data")
+
+        # step 2
+        process_args(parse_args([os.path.join(tmp_dir, "src"), path_out, "-d", path_data]))
+        self.assertTrue(dirs_identical(path_data, os.path.join("data/output", "data")), "data folder should match reference data")
+
+        # step 3
+        process_args(parse_args([os.path.join(tmp_dir, "tgt"), "-d", path_data, "-p"]))
+        self.assertTrue(dirs_identical(os.path.join(tmp_dir, "src"), os.path.join(tmp_dir, "tgt")), "source and target should be identical")
+
+
 
 if __name__ == '__main__':  
     unittest.main()

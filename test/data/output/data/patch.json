@@ -1,0 +1,11 @@
+{
+    "copy": [
+        "1.txt",
+        "3.txt",
+        "subfolder/B.txt"
+    ],
+    "delete": [
+        "4.txt",
+        "foo/Z.txt"
+    ]
+}
