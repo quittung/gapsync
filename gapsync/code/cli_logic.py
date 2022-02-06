@@ -97,7 +97,7 @@ def dual_dir_mode(source: str, target: str, out: str, data: str, make_data: bool
                 sys.exit(1)
 
         # patch
-        apply_patch(source_dir, target_dir, patch_instructions)
+        apply_patch(source_dir, target_dir, patch_instructions, verbose)
 
         # verify 
         if not dir_content_same(source_list, target_dir, pool, verbose):

@@ -42,16 +42,20 @@ def make_patch_instructions(source_list: dict, target_list: dict):
 
     return {"copy": sorted(list(files_copy)), "delete": sorted(list(files_delete))}
 
-def copy_list(source: str, target: str, files: list):
+def copy_list(source: str, target: str, files: list, verbose: bool = False):
     for f in files:
+        if verbose: print("removing - {}".format(f))
+
         file_source = os.path.join(source, f)
         file_dest = os.path.join(target, f)
 
         os.makedirs(os.path.dirname(file_dest), exist_ok=True)
         shutil.copy(file_source, file_dest)
 
-def delete_list(dir: str, files: list):
+def delete_list(dir: str, files: list, verbose: bool = False):
     for f in files:
+        if verbose: print("removing - {}".format(f))
+
         path = os.path.join(dir, f)
         os.remove(path)
 
@@ -59,6 +63,6 @@ def delete_list(dir: str, files: list):
         if not os.listdir(path_dir):
             os.rmdir(path_dir)
 
-def apply_patch(source: str, target: str, instructions: dict):
-    copy_list(source, target, instructions["copy"])
-    delete_list(target, instructions["delete"])
+def apply_patch(source: str, target: str, instructions: dict, verbose: bool = False):
+    copy_list(source, target, instructions["copy"], verbose)
+    delete_list(target, instructions["delete"], verbose)
