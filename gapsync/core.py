@@ -1,16 +1,19 @@
+from multiprocessing.pool import Pool
 import os, shutil
-import serialize, hashing
 
-def scan_or_load(path: str, pool = None) -> dict:
+from .serialize import load_json
+from .hashing import hash_folder
+
+def scan_or_load(path: str, pool = None, verbose: bool = False) -> dict:
     if type(path) == dict:
         return path
     elif os.path.isdir(path):
-        return hashing.hash_folder(path, pool)
+        return hash_folder(path, pool, verbose)
     else: 
-        return serialize.load_json(path)
+        return load_json(path)
 
-def dir_content_same(path_a: str, path_b: str):
-    return scan_or_load(path_a) == scan_or_load(path_b)
+def dir_content_same(path_a: str, path_b: str, pool: Pool, verbose: bool = False):
+    return scan_or_load(path_a, pool, verbose) == scan_or_load(path_b, pool, verbose)
 
 def all_files_exist(dir:str, file_list: list):
     return all(os.path.exists(os.path.join(dir, file)) for file in file_list)
