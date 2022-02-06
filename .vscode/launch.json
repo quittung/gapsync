@@ -1,0 +1,21 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": ["C:/Users/qtng/Documents", "-v"] //scan target
+            //"args": ["test/target", "-o", "test/scan.json"] //scan target
+            //"args": ["test/source", "test/target"] //compare directly
+            //"args": ["test/source", "test/scan.json", "-d", "test/data"] //compare from scan, perpare patch 
+            //"args": ["test/target2", "-d", "test/data", "-p"] //apply patch from file 
+            //"args": ["test/source", "test/target2", "-p"] //direct sync 
+        }
+    ]
+}
