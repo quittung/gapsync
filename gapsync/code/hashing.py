@@ -1,10 +1,10 @@
 import os, hashlib
 
-def hash_file(filename: str, buffer: int = 1024 * 1024) -> str:
+def hash_file(filename: str, buffer_size: int = 1024 * 1024) -> str:
     hash = hashlib.sha256()
     with open(filename, 'rb') as f:
         while True:
-            data = f.read(buffer)
+            data = f.read(buffer_size)
             if not data:
                 break
             hash.update(data)
@@ -30,7 +30,7 @@ def hash_folder(top_dir: str, pool = None, verbose: bool = False) -> dict:
     files = [os.path.join(root, file) for root, dirs, files in os.walk(top_dir) for file in files]
 
     
-    hash_file_sp = HashFileSingleParam(verbose)
+    hash_file_sp = HashFileSingleParam(verbose = verbose)
     if pool: 
         hashes = pool.map(hash_file_sp, files)
     else:

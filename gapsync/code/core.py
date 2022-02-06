@@ -40,7 +40,7 @@ def make_patch_instructions(source_list: dict, target_list: dict):
     files_copy = files_common_different.union(files_source_only)
     files_delete = files_target_only
 
-    return {"copy": list(files_copy), "delete": list(files_delete)}
+    return {"copy": sorted(list(files_copy)), "delete": sorted(list(files_delete))}
 
 def copy_list(source: str, target: str, files: list):
     for f in files:
@@ -59,6 +59,6 @@ def delete_list(dir: str, files: list):
         if not os.listdir(path_dir):
             os.rmdir(path_dir)
 
-def patch(source: str, target: str, instructions: dict):
+def apply_patch(source: str, target: str, instructions: dict):
     copy_list(source, target, instructions["copy"])
     delete_list(target, instructions["delete"])

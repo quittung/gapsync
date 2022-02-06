@@ -2,6 +2,8 @@ import argparse, os, sys
 from multiprocessing.pool import Pool
 import sys
 
+name = __name__
+parent = __package__
 from .core import *
 from .serialize import dump_json, print_json
 
@@ -95,7 +97,7 @@ def dual_dir_mode(source: str, target: str, out: str, data: str, make_data: bool
                 sys.exit(1)
 
         # patch
-        patch(source_dir, target_dir, patch_instructions)
+        apply_patch(source_dir, target_dir, patch_instructions)
 
         # verify 
         if not dir_content_same(source_list, target_dir, pool, verbose):
