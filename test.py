@@ -36,23 +36,6 @@ class TestIntegration(unittest.TestCase):
         
         self.assertEqual(cm.exception.code, 2)
 
-    def test_sync_airgap_cli(self):
-        """test sync with cli"""
-        prepare_test()
-        path_out = os.path.join(tmp_dir, "target.json")
-        path_data = os.path.join(tmp_dir, "data")
-
-        # step 1
-        subprocess.call(["python3", "../gapsync", os.path.join(tmp_dir, "tgt"), "-o", path_out])
-        self.assertTrue(filecmp.cmp(path_out, os.path.join("data/output", "target.json")), "scan output should match reference data")
-
-        # step 2
-        subprocess.call(["python3", "../gapsync", os.path.join(tmp_dir, "src"), path_out, "-d", path_data])
-        self.assertTrue(dirs_identical(path_data, os.path.join("data/output", "data")), "data folder should match reference data")
-
-        # step 3
-        subprocess.call(["python3", "../gapsync", os.path.join(tmp_dir, "tgt"), "-d", path_data, "-p"])
-        self.assertTrue(dirs_identical(os.path.join(tmp_dir, "src"), os.path.join(tmp_dir, "tgt")), "source and target should be identical")
 
     def test_sync_airgap(self):
         """test sync with imported functions for easier debugging"""
@@ -72,10 +55,35 @@ class TestIntegration(unittest.TestCase):
         process_args(parse_args([os.path.join(tmp_dir, "tgt"), "-d", path_data, "-p"]))
         self.assertTrue(dirs_identical(os.path.join(tmp_dir, "src"), os.path.join(tmp_dir, "tgt")), "source and target should be identical")
 
+
     def test_sync_direct(self):
         prepare_test()
 
         process_args(parse_args([os.path.join(tmp_dir, "src"), os.path.join(tmp_dir, "tgt"), "-p"]))
+        self.assertTrue(dirs_identical(os.path.join(tmp_dir, "src"), os.path.join(tmp_dir, "tgt")), "source and target should be identical")
+
+
+    def test_build(self):
+        """test sync with cli"""
+        prepare_test()
+
+        os.chdir("..")
+        subprocess.call(["python3", "build.py"])
+        os.chdir("test")
+
+        path_out = os.path.join(tmp_dir, "target.json")
+        path_data = os.path.join(tmp_dir, "data")
+
+        # step 1
+        subprocess.call(["python3", "../dist/gapsync", os.path.join(tmp_dir, "tgt"), "-o", path_out])
+        self.assertTrue(filecmp.cmp(path_out, os.path.join("data/output", "target.json")), "scan output should match reference data")
+
+        # step 2
+        subprocess.call(["python3", "../dist/gapsync", os.path.join(tmp_dir, "src"), path_out, "-d", path_data])
+        self.assertTrue(dirs_identical(path_data, os.path.join("data/output", "data")), "data folder should match reference data")
+
+        # step 3
+        subprocess.call(["python3", "../dist/gapsync", os.path.join(tmp_dir, "tgt"), "-d", path_data, "-p"])
         self.assertTrue(dirs_identical(os.path.join(tmp_dir, "src"), os.path.join(tmp_dir, "tgt")), "source and target should be identical")
 
 
