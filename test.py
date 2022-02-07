@@ -3,7 +3,7 @@ import unittest
 import filecmp
 import subprocess
 
-from gapsync.code.cli_logic import parse_args, process_args
+from gapsync.gs_sub.cli_logic import parse_args, process_args
 
 tmp_dir = "data_tmp"
 
