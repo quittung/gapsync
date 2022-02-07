@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "gapsync",
             "console": "integratedTerminal",
-            //"args": ["-h"] //scan target
+            //"args": ["-h"] //show help
             "args": ["test/data", "-v"] //scan target
             //"args": ["test/target", "-o", "test/scan.json"] //scan target
             //"args": ["test/source", "test/target"] //compare directly
