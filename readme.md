@@ -59,3 +59,22 @@ python3 gapsync *target_dir* -d *data_dir* -p
 ```
 After some checks, the patch you calculated will be applied to the target directory.
 If your friend wants to do a dry run first, without changing any files, just omit the `-p` flag.
+
+## Arguments & Usage
+Call the script using `python3 *path_to_gapsync_folder_or_executable* *args*`. If you use the executable on Unix, you can run it directly: `*path_to_gapsync* *args*`.
+
+Gapsync expects one or two paths as positional arguments: `gapsync *primary* [*secondary*]`. Either path can be a directory or a previously exported directory scan.
+
+There are three basic modes the script can run in:
+ - Scan - one path: `gapsync *dir_to_scan* *args*`
+   - `-o *out_path*`, optional - output scan as json file
+   - `-v`, optional - verbose mode, get update for every file interaction in real time
+ - Compare - two paths: `gapsync *source_dir* *target_dir* *args*`
+   - `-o *out_path*`, optional - to output patch instructions as json file
+   - `-d *data_dir*`, optional - to compile all necessary file for patching in a directory
+   - `-p`, optional - patch immediately, only useful if both paths are actual directories
+   - `-v`, optional - verbose mode, get update for every file interaction in real time
+ - Patch - one path and data directory: `gapsync *target_dir* -d *data_dir* *args*`
+   - `-d *data_dir*`, mandatory - source of patch data
+   - `-p`, optional - apply patch to target directory
+   - `-v`, optional - verbose mode, get update for every file interaction in real time
