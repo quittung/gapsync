@@ -1,0 +1,24 @@
+if both directories are mounted on your system:
+    python3 gapsync *source_dir* *target_dir* -p
+    
+if the directories are on separate systems, follow this three step process:
+    1. scanning the target directory
+        python3 gapsync *target_dir* -o target.json
+        this creates a list of files and their hashes and saves it as 'scan.json'
+        send this file to the person performing step 2
+
+    2. preparing the patch data
+        python3 gapsync *source_dir* target.json -d *data_dir*
+        this compares the source data to the scan of the target data
+        then it collects all necessary data in *data_dir*
+        send that directory to the person performing the next step
+
+    3. patching the target directory
+        python3 gapsync *target_dir* -d *data_dir* -p
+        this checks the data directory and applies the patch
+        then it verifies the target directory is identical to the source
+        to perform a dry run without changing files, remove the '-p'
+
+
+get updates and more help here: https://github.com/quittung/gapsync/
+
