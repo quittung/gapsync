@@ -1,6 +1,7 @@
 import os, shutil
 import unittest
 import filecmp
+import subprocess
 
 from gapsync.code.cli_logic import parse_args, process_args
 
@@ -35,7 +36,26 @@ class TestIntegration(unittest.TestCase):
         
         self.assertEqual(cm.exception.code, 2)
 
+    def test_sync_airgap_cli(self):
+        """test sync with cli"""
+        prepare_test()
+        path_out = os.path.join(tmp_dir, "target.json")
+        path_data = os.path.join(tmp_dir, "data")
+
+        # step 1
+        subprocess.call(["python3", "../gapsync", os.path.join(tmp_dir, "tgt"), "-o", path_out])
+        self.assertTrue(filecmp.cmp(path_out, os.path.join("data/output", "target.json")), "scan output should match reference data")
+
+        # step 2
+        subprocess.call(["python3", "../gapsync", os.path.join(tmp_dir, "src"), path_out, "-d", path_data])
+        self.assertTrue(dirs_identical(path_data, os.path.join("data/output", "data")), "data folder should match reference data")
+
+        # step 3
+        subprocess.call(["python3", "../gapsync", os.path.join(tmp_dir, "tgt"), "-d", path_data, "-p"])
+        self.assertTrue(dirs_identical(os.path.join(tmp_dir, "src"), os.path.join(tmp_dir, "tgt")), "source and target should be identical")
+
     def test_sync_airgap(self):
+        """test sync with imported functions for easier debugging"""
         prepare_test()
         path_out = os.path.join(tmp_dir, "target.json")
         path_data = os.path.join(tmp_dir, "data")
