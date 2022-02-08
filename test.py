@@ -56,7 +56,16 @@ class TestIntegration(unittest.TestCase):
         self.assertTrue(dirs_identical(os.path.join(tmp_dir, "src"), os.path.join(tmp_dir, "tgt")), "source and target should be identical")
 
 
+    def test_scan_single_threaded(self):
+        """test single threaded scan"""
+        prepare_test()
+        path_out = os.path.join(tmp_dir, "target.json")
+
+        process_args(parse_args([os.path.join(tmp_dir, "tgt"), "-o", path_out, "-s"]))
+        self.assertTrue(filecmp.cmp(path_out, os.path.join("data/output", "target.json")), "scan output should match reference data")
+
     def test_sync_direct(self):
+        "test direct sync with access to both directories"
         prepare_test()
 
         process_args(parse_args([os.path.join(tmp_dir, "src"), os.path.join(tmp_dir, "tgt"), "-p"]))

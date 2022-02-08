@@ -19,6 +19,7 @@ def parse_args(args: list = None):
     parser.add_argument("-o", "--out", help="output path for json files (scan or patch instructions)")
     parser.add_argument("-d", "--data", help="data directory")
     parser.add_argument("-p", "--patch", action='store_true', help="actually modify the target directory")
+    parser.add_argument("-s", "--single_threaded", action="store_true", help="use a single thread for scanning only")
     parser.add_argument("-v", "--verbose", action='store_true')
 
     parser.description = "tool for synchronizing two directories across different systems without simultaneous access\nworks with airgapped systems and only sends changed files"
@@ -27,18 +28,18 @@ def parse_args(args: list = None):
     args_parsed = parser.parse_args(args) if args else parser.parse_args()
     return args_parsed
 
-def single_dir_mode(dir: str, out: str, verbose: bool):
+def single_dir_mode(dir: str, out: str, verbose: bool, single_threaded: bool):
     """this mode only supports scanning a single directory and outputting the result"""
-    pool = Pool()
+    pool = None if single_threaded else Pool()
     file_list = scan_or_load(dir, pool, verbose)
-    pool.close()
+    if pool: pool.close()
 
     print_json(file_list)
     if out:
         dump_json(file_list, out)
 
-def dual_dir_mode(source: str, target: str, out: str, data: str, make_data: bool, patch: bool, verbose: bool):
-    pool = Pool()
+def dual_dir_mode(source: str, target: str, out: str, data: str, make_data: bool, patch: bool, verbose: bool, single_threaded: bool):
+    pool = None if single_threaded else Pool()
     source_list = scan_or_load(source, pool, verbose)
     target_list = scan_or_load(target, pool, verbose)
     patch_instructions = make_patch_instructions(source_list, target_list)
@@ -93,7 +94,7 @@ def dual_dir_mode(source: str, target: str, out: str, data: str, make_data: bool
         else:
             print("patched and verified")
     
-    pool.close()
+    if pool: pool.close()
 
 def process_args(args: argparse.Namespace):
     if not args.secondary:
@@ -110,11 +111,12 @@ def process_args(args: argparse.Namespace):
                 data = args.data,
                 make_data = False,
                 patch = args.patch,
-                verbose = args.verbose
+                verbose = args.verbose,
+                single_threaded = args.single_threaded
             )
         else:
             # scan dir
-            single_dir_mode(args.primary, args.out, args.verbose)
+            single_dir_mode(args.primary, args.out, args.verbose, single_threaded = args.single_threaded)
     else:
         # args primary is actual source
         # args secondary might be either scan or actual target
@@ -126,5 +128,6 @@ def process_args(args: argparse.Namespace):
             data = args.data,
             make_data = bool(args.data),
             patch = args.patch,
-            verbose = args.verbose
+            verbose = args.verbose,
+            single_threaded = args.single_threaded
         )
