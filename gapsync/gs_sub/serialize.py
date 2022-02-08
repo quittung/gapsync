@@ -13,7 +13,7 @@ def dump_json(obj: object, fname: str) -> None:
     if dirname != "" and not os.path.exists(dirname): os.makedirs(dirname)
     
     with open(fname, 'w') as fobj:
-        json.dump(obj, fobj, indent = INDENTATION)
+        json.dump(obj, fobj, sort_keys = True, indent = INDENTATION)
 
 def load_json(fname: str) -> object:
     """Loads a json file and returns the encoded object.
@@ -28,4 +28,4 @@ def load_json(fname: str) -> object:
         return json.loads(fobj.read())
 
 def print_json(obj: object) -> None:
-    print(json.dumps(obj, indent = INDENTATION))
+    print(json.dumps(obj, sort_keys = True, indent = INDENTATION))
