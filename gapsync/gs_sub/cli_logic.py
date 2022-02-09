@@ -1,10 +1,8 @@
 import argparse, os, sys
+import subprocess
 from multiprocessing.pool import Pool
-import sys
 import pkgutil
 
-name = __name__
-parent = __package__
 from .core import *
 from .serialize import dump_json, print_json
 
@@ -12,8 +10,18 @@ def load_str(file: str):
     data = pkgutil.get_data(__package__, file)
     return data.decode("utf-8") 
 
+def get_version():
+    try:
+        return load_str("cli_version.txt")
+    except:
+        if shutil.which("git") != None:
+            return subprocess.check_output(["git", "describe", "--tags"]).decode("utf-8").strip() + "-dev"
+        else:
+            return "unknown"
+
 def parse_args(args: list = None):
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter)
+    
     parser.add_argument("primary", help="primary path")
     parser.add_argument("secondary", nargs="?", help="secondary path")
     parser.add_argument("-o", "--out", help="output path for json files (scan or patch instructions)")
@@ -21,6 +29,8 @@ def parse_args(args: list = None):
     parser.add_argument("-p", "--patch", action='store_true', help="actually modify the target directory")
     parser.add_argument("-s", "--single_threaded", action="store_true", help="use a single thread for scanning only")
     parser.add_argument("-v", "--verbose", action='store_true')
+    
+    parser.add_argument("--version", action="version", version=get_version())
 
     parser.description = "tool for synchronizing two directories across different systems without simultaneous access\nworks with airgapped systems and only sends changed files"
     parser.epilog = load_str("cli_help.txt") + load_str("cli_license.txt")

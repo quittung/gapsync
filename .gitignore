@@ -115,3 +115,4 @@ dmypy.json
 
 # other
 *tmp*
+cli_version.txt
