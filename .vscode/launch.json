@@ -8,6 +8,13 @@
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: Gapsync Main",
+            "type": "python",
+            "request": "launch",
             "program": "gapsync",
             "console": "integratedTerminal",
             //"args": ["-h"] //show help
