@@ -15,7 +15,7 @@ Gapsync scans the target directory locally and creates a summary of the files. T
 ### Step 1 - Scanning the target directory
 Ask your friend to scan the target directory:
 ```
-python3 gapsync *target_dir* -o target.json
+python3 gapsync scan <target_dir> -o target.json
 ```
 This creates a list of files and their sha256 hashes and saves it as `target.json` in the current working directory. The name of the output file is not important. Here is a sample output:
 ```
@@ -32,7 +32,7 @@ Your friend needs to send `target.json` to you for the next step.
 ### Step 2 - Comparison and patch preparation
 Compare the target directory's state to your master copy - the source directy:
 ```
-python3 gapsync *source_dir* target.json -d *data_dir*
+python3 gapsync diff <source_dir> target.json -d <data_dir>
 ```
 This command automatically compiles the patch instructions and the new or changed files in the `data_dir` directory. 
 The instructions will have this format:
@@ -55,29 +55,43 @@ Send the data directory over to your friend.
 ### Step 3 - Applying the patch
 In this final step your friend will have to run the following command:
 ```
-python3 gapsync *target_dir* -d *data_dir* -p
+python3 gapsync patch <data_dir> <target_dir>
 ```
 After some checks, the patch you calculated will be applied to the target directory.
-If your friend wants to do a dry run first, without changing any files, just omit the `-p` flag.
+If your friend wants to do a dry run first, without changing any files, just add the `-t` flag.
 
 ## Arguments
-Call the script using `python3 *path_to_gapsync_folder_or_executable* *args*`. If you use the executable on Unix, you can run it directly: `*path_to_gapsync* *args*`.
+Call the script using `python3 <path_to_gapsync> <subcommand> <args>`. If you use the executable on Unix, you can run omit the `python3` prefix.
 
-Gapsync expects one or two paths as positional arguments: `gapsync *primary* [*secondary*]`. Either path can be a directory or a previously exported directory scan.
+### Top level flags
+ - `-h` shows general help and quits
+ - `--version` shows version and quits
+ - `--license` shows license and quits
 
-There are three basic modes the script can run in:
- - Scan - one path: `gapsync *dir_to_scan* *args*`
-   - `-o *out_path*`, optional - output scan as json file
-   - `-v`, optional - verbose mode, get update for every file interaction in real time
- - Compare - two paths: `gapsync *source_dir* *target_dir* *args*`
-   - `-o *out_path*`, optional - to output patch instructions as json file
-   - `-d *data_dir*`, optional - to compile all necessary file for patching in a directory
-   - `-p`, optional - patch immediately, only useful if both paths are actual directories
-   - `-v`, optional - verbose mode, get update for every file interaction in real time
- - Patch - one path and data directory: `gapsync *target_dir* -d *data_dir* *args*`
-   - `-d *data_dir*`, mandatory - source of patch data
-   - `-p`, optional - apply patch to target directory
-   - `-v`, optional - verbose mode, get update for every file interaction in real time
+### scan
+```python3 gapsync scan [<dir>] [-o OUT]```
+ - Scans a directory and generates a list of files and their sha256 hashes
+ - Omitting `<dir>` scans current workding directory
+ - `-o` saves the list as a file
+ - Also available as `python3 gapsync scan [<dir>] [-o OUT]` 
+
+### diff
+```python3 gapsync diff <source> <target>  [-o OUT] [-d DATA]```
+ - Compares two directories and generates patch instructions
+ - `<source>` and `<target>` can either be directories or scans of directories
+ - `-o` saves the list as a file
+ - `-d` compiles necessary files into a data folder, requires `<source>` to be a directory
+
+### patch
+```python3 gapsync patch <data> <target> [-t]```
+ - Patches a directory using instructions and files from a data folder
+ - `-t` can be used to perform a dry run without changing any files
+
+### Common subcommand flags
+ - `-h` show help
+ - `-s` single threaded mode, may reduce random reads during scanning
+ - `-v` increase output verbosity, especially more frequent status updates
+
 
 ## License
-This script is licensed under the MIT license, so you can do pretty much anything you want. You don't even need to include the license when redistributing, because it is already baked into the help command (`gapsync -h`). The software is provided without warranty. See the `LICENSE` file for details.
+This script is licensed under the MIT license, so you can do pretty much anything you want. You don't even need to include the license when redistributing, because it is already baked into the executable (`gapsync --license`). The software is provided without warranty. See the `LICENSE` file for details.
